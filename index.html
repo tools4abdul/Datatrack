@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataTrack | Operations Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-icon">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 19h16M6 16V9m6 7V5m6 11v-4" />
+          </svg>
+        </span>
+        <span class="brand-text">DataTrack</span>
+      </div>
+
+      <nav class="nav">
+        <div class="nav-label">Workspace</div>
+        <a href="#" class="nav-link active">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1" />
+              <rect x="14" y="3" width="7" height="4" rx="1" />
+              <rect x="14" y="10" width="7" height="11" rx="1" />
+              <rect x="3" y="13" width="7" height="8" rx="1" />
+            </svg>
+          </span>
+          Overview
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 19h16M5 16V9m7 7V5m7 11V3" />
+            </svg>
+          </span>
+          Analytics
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M3 12h18M3 7h12M3 17h8" />
+            </svg>
+          </span>
+          Sources
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 6h16M4 12h16M4 18h10" />
+            </svg>
+          </span>
+          Pipelines
+        </a>
+        <a href="#" class="nav-link">
+          <span class="icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" />
+              <path d="M2 12h2m16 0h2M12 2v2m0 16v2" />
+            </svg>
+          </span>
+          Settings
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sync-status">
+          <span class="pulse"></span>
+          <span>Live sync online</span>
+        </div>
+        <button class="button button-primary compact">+ Create report</button>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">Operations intelligence</div>
+          <h1>Executive Dashboard</h1>
+        </div>
+        <div class="topbar-actions">
+          <button class="button button-ghost">This week</button>
+          <button class="button button-primary">Export report</button>
+        </div>
+      </header>
+
+      <section class="kpi-grid" id="kpiGrid"></section>
+
+      <section class="panel-row">
+        <article class="panel panel-large">
+          <div class="panel-header">
+            <div>
+              <div class="panel-kicker">Engagement trend</div>
+              <h2>Volume Growth</h2>
+            </div>
+            <div class="toolbar">
+              <button class="button button-ghost small">7D</button>
+              <button class="button button-ghost small active">30D</button>
+              <button class="button button-ghost small">90D</button>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="trendChart" aria-label="Volume trend chart"></canvas>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-header compact-header">
+            <div>
+              <div class="panel-kicker">Channel mix</div>
+              <h2>Acquisition</h2>
+            </div>
+            <span class="badge success">Healthy</span>
+          </div>
+          <div class="donut-wrap">
+            <div class="donut-chart" id="channelDonut"></div>
+            <ul class="legend-list" id="channelLegend"></ul>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel-row lower">
+        <article class="panel">
+          <div class="panel-header compact-header">
+            <div>
+              <div class="panel-kicker">Quality signals</div>
+              <h2>Data Health</h2>
+            </div>
+            <span class="badge warning">Watch</span>
+          </div>
+          <div class="health-bars" id="healthBars"></div>
+        </article>
+
+        <article class="panel panel-large">
+          <div class="panel-header compact-header">
+            <div>
+              <div class="panel-kicker">Latest activity</div>
+              <h2>Event Stream</h2>
+            </div>
+            <button class="button button-ghost small">All events</button>
+          </div>
+          <div class="activity-list" id="activityFeed"></div>
+        </article>
+      </section>
+
+      <section class="panel-row lower">
+        <article class="panel" id="ingestPanel"></article>
+        <article class="panel panel-large">
+          <div class="panel-header compact-header">
+            <div>
+              <div class="panel-kicker">Operational reports</div>
+              <h2>Source Performance</h2>
+            </div>
+            <button class="button button-primary small">Create alert</button>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Source</th>
+                  <th>Status</th>
+                  <th>Records</th>
+                  <th>Latency</th>
+                  <th>Quality</th>
+                  <th>Change</th>
+                </tr>
+              </thead>
+              <tbody id="sourceTable"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

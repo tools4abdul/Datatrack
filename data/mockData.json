@@ -1,0 +1,102 @@
+{
+  "kpis": [
+    {
+      "title": "Events tracked",
+      "value": 183270,
+      "unit": "events",
+      "trend": "+12.9%",
+      "positive": true,
+      "icon": "activity"
+    },
+    {
+      "title": "Active sources",
+      "value": 18,
+      "unit": "sources",
+      "trend": "+2",
+      "positive": true,
+      "icon": "data"
+    },
+    {
+      "title": "Pipeline latency",
+      "value": 2.4,
+      "unit": "min avg",
+      "trend": "-8.1%",
+      "positive": false,
+      "icon": "clock"
+    },
+    {
+      "title": "Data health",
+      "value": 92,
+      "unit": "% match",
+      "trend": "+3.2%",
+      "positive": true,
+      "icon": "check"
+    }
+  ],
+  "channels": [
+    { "name": "Web", "value": 44, "color": "#136d79" },
+    { "name": "Mobile", "value": 29, "color": "#22a4b3" },
+    { "name": "API", "value": 18, "color": "#f0a34b" },
+    { "name": "Partner", "value": 9, "color": "#7f6ab3" }
+  ],
+  "ingest": {
+    "lastSync": "2026-08-11T10:16:00Z",
+    "runtime": "live",
+    "totalSources": 18,
+    "protocols": [
+      {
+        "name": "REST",
+        "status": "online",
+        "sources": 7,
+        "latency": "1.2m",
+        "successRate": 98,
+        "endpoint": "/api/v1"
+      },
+      {
+        "name": "GraphQL",
+        "status": "online",
+        "sources": 3,
+        "latency": "0.9m",
+        "successRate": 96,
+        "endpoint": "/graphql"
+      },
+      {
+        "name": "SOAP",
+        "status": "warning",
+        "sources": 2,
+        "latency": "3.2m",
+        "successRate": 86,
+        "endpoint": "/soap/service"
+      },
+      {
+        "name": "Webhook",
+        "status": "online",
+        "sources": 6,
+        "latency": "0.4m",
+        "successRate": 99,
+        "endpoint": "/hooks"
+      }
+    ]
+  },
+  "health": [
+    { "label": "Validation coverage", "value": 88 },
+    { "label": "Field completeness", "value": 76 },
+    { "label": "Sync freshness", "value": 94 },
+    { "label": "Alert routing", "value": 68 }
+  ],
+  "trend": {
+    "labels": ["Apr 01", "Apr 03", "Apr 04", "Apr 06", "Apr 08", "Apr 10", "Apr 12", "Apr 14"],
+    "values": [123, 160, 142, 218, 200, 270, 304, 354]
+  },
+  "activity": [
+    { "type": "pipeline", "title": "API ingestion completed", "meta": "Revenue API · 2 min ago", "icon": "A" },
+    { "type": "source", "title": "Mobile App source refreshed", "meta": "QA mobile bundle · 12 min ago", "icon": "M" },
+    { "type": "alert", "title": "Data quality alert resolved", "meta": "Partner exports · 31 min ago", "icon": "!" }
+  ],
+  "sources": [
+    { "name": "Revenue API", "status": "online", "records": 251420, "latency": "1.2m", "quality": "98%", "change": "+4.1%" },
+    { "name": "QA Mobile Bundle", "status": "online", "records": 80210, "latency": "0.8m", "quality": "96%", "change": "+2.3%" },
+    { "name": "Partner Risk Feed", "status": "warning", "records": 47000, "latency": "3.1m", "quality": "84%", "change": "-1.4%" },
+    { "name": "Product Events", "status": "offline", "records": 39000, "latency": "—", "quality": "68%", "change": "-2.2%" }
+  ]
+}
