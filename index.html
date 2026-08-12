@@ -20,7 +20,7 @@
 
       <nav class="nav">
         <div class="nav-label">Workspace</div>
-        <a href="#" class="nav-link active">
+        <a href="#" class="nav-link active" data-section="overview">
           <span class="icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <rect x="3" y="3" width="7" height="7" rx="1" />
@@ -31,7 +31,7 @@
           </span>
           Overview
         </a>
-        <a href="#" class="nav-link">
+        <a href="#" class="nav-link" data-section="analytics">
           <span class="icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 19h16M5 16V9m7 7V5m7 11V3" />
@@ -39,7 +39,7 @@
           </span>
           Analytics
         </a>
-        <a href="#" class="nav-link">
+        <a href="#" class="nav-link" data-section="sources">
           <span class="icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 12h18M3 7h12M3 17h8" />
@@ -47,7 +47,7 @@
           </span>
           Sources
         </a>
-        <a href="#" class="nav-link">
+        <a href="#" class="nav-link" data-section="pipelines">
           <span class="icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M4 6h16M4 12h16M4 18h10" />
@@ -55,7 +55,7 @@
           </span>
           Pipelines
         </a>
-        <a href="#" class="nav-link">
+        <a href="#" class="nav-link" data-section="settings">
           <span class="icon">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z" />
@@ -71,7 +71,7 @@
           <span class="pulse"></span>
           <span>Live sync online</span>
         </div>
-        <button class="button button-primary compact">+ Create report</button>
+        <button id="createReportButton" class="button button-primary compact">+ Create report</button>
       </div>
     </aside>
 
@@ -82,94 +82,159 @@
           <h1>Executive Dashboard</h1>
         </div>
         <div class="topbar-actions">
-          <button class="button button-ghost">This week</button>
-          <button class="button button-primary">Export report</button>
+          <button id="viewPeriodButton" class="button button-ghost">This week</button>
+          <button id="exportReportButton" class="button button-primary">Export report</button>
         </div>
       </header>
+      <div id="dashboardNotification" class="notification" aria-live="polite" hidden></div>
 
-      <section class="kpi-grid" id="kpiGrid"></section>
+      <section id="section-overview" class="dashboard-section">
+        <section class="kpi-grid" id="kpiGrid"></section>
 
-      <section class="panel-row">
-        <article class="panel panel-large">
-          <div class="panel-header">
-            <div>
-              <div class="panel-kicker">Engagement trend</div>
-              <h2>Volume Growth</h2>
+        <section class="panel-row">
+          <article class="panel panel-large">
+            <div class="panel-header">
+              <div>
+                <div class="panel-kicker">Engagement trend</div>
+                <h2>Volume Growth</h2>
+              </div>
+              <div class="toolbar">
+                <button class="button button-ghost small" data-timeframe="7">7D</button>
+                <button class="button button-ghost small active" data-timeframe="30">30D</button>
+                <button class="button button-ghost small" data-timeframe="90">90D</button>
+              </div>
             </div>
-            <div class="toolbar">
-              <button class="button button-ghost small">7D</button>
-              <button class="button button-ghost small active">30D</button>
-              <button class="button button-ghost small">90D</button>
+            <div class="chart-wrap">
+              <canvas id="trendChart" aria-label="Volume trend chart"></canvas>
             </div>
-          </div>
-          <div class="chart-wrap">
-            <canvas id="trendChart" aria-label="Volume trend chart"></canvas>
-          </div>
-        </article>
+          </article>
 
-        <article class="panel">
-          <div class="panel-header compact-header">
-            <div>
-              <div class="panel-kicker">Channel mix</div>
-              <h2>Acquisition</h2>
+          <article class="panel">
+            <div class="panel-header compact-header">
+              <div>
+                <div class="panel-kicker">Channel mix</div>
+                <h2>Acquisition</h2>
+              </div>
+              <span class="badge success">Healthy</span>
             </div>
-            <span class="badge success">Healthy</span>
-          </div>
-          <div class="donut-wrap">
-            <div class="donut-chart" id="channelDonut"></div>
-            <ul class="legend-list" id="channelLegend"></ul>
-          </div>
-        </article>
+            <div class="donut-wrap">
+              <div class="donut-chart" id="channelDonut"></div>
+              <ul class="legend-list" id="channelLegend"></ul>
+            </div>
+          </article>
+        </section>
       </section>
 
-      <section class="panel-row lower">
-        <article class="panel">
-          <div class="panel-header compact-header">
-            <div>
-              <div class="panel-kicker">Quality signals</div>
-              <h2>Data Health</h2>
+      <section id="section-analytics" class="dashboard-section hidden">
+        <div class="section-head">
+          <div class="panel-kicker">Analytics insights</div>
+          <h2>Performance snapshot</h2>
+        </div>
+        <section class="panel-row">
+          <article class="panel panel-large">
+            <div class="panel-header">
+              <div>
+                <div class="panel-kicker">Trend analysis</div>
+                <h2>Events over time</h2>
+              </div>
             </div>
-            <span class="badge warning">Watch</span>
-          </div>
-          <div class="health-bars" id="healthBars"></div>
-        </article>
+            <div class="chart-wrap">
+              <canvas id="trendChartAnalytics" aria-label="Analytics trend chart"></canvas>
+            </div>
+          </article>
 
-        <article class="panel panel-large">
-          <div class="panel-header compact-header">
-            <div>
-              <div class="panel-kicker">Latest activity</div>
-              <h2>Event Stream</h2>
+          <article class="panel">
+            <div class="panel-header compact-header">
+              <div>
+                <div class="panel-kicker">Channel distribution</div>
+                <h2>Traffic sources</h2>
+              </div>
+              <span class="badge success">Stable</span>
             </div>
-            <button class="button button-ghost small">All events</button>
-          </div>
-          <div class="activity-list" id="activityFeed"></div>
-        </article>
+            <div class="donut-wrap">
+              <div class="donut-chart" id="channelDonutAnalytics"></div>
+              <ul class="legend-list" id="channelLegendAnalytics"></ul>
+            </div>
+          </article>
+        </section>
       </section>
 
-      <section class="panel-row lower">
-        <article class="panel" id="ingestPanel"></article>
+      <section id="section-sources" class="dashboard-section hidden">
+        <section class="panel-row lower">
+          <article class="panel" id="ingestPanelSources"></article>
+          <article class="panel panel-large">
+            <div class="panel-header compact-header">
+              <div>
+                <div class="panel-kicker">Source inventory</div>
+                <h2>Connected endpoints</h2>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Source</th>
+                    <th>Status</th>
+                    <th>Records</th>
+                    <th>Latency</th>
+                    <th>Quality</th>
+                    <th>Change</th>
+                  </tr>
+                </thead>
+                <tbody id="sourceTableSources"></tbody>
+              </table>
+            </div>
+          </article>
+        </section>
+      </section>
+
+      <section id="section-pipelines" class="dashboard-section hidden">
+        <section class="panel-row lower">
+          <article class="panel">
+            <div class="panel-header compact-header">
+              <div>
+                <div class="panel-kicker">Quality signals</div>
+                <h2>Data Health</h2>
+              </div>
+              <span class="badge warning">Watch</span>
+            </div>
+            <div class="health-bars" id="healthBars"></div>
+          </article>
+
+          <article class="panel panel-large">
+            <div class="panel-header compact-header">
+              <div>
+                <div class="panel-kicker">Latest activity</div>
+                <h2>Event Stream</h2>
+              </div>
+              <button id="showAllEventsButton" class="button button-ghost small">All events</button>
+            </div>
+            <div class="activity-list" id="activityFeed"></div>
+          </article>
+        </section>
+      </section>
+
+      <section id="section-settings" class="dashboard-section hidden">
         <article class="panel panel-large">
           <div class="panel-header compact-header">
             <div>
-              <div class="panel-kicker">Operational reports</div>
-              <h2>Source Performance</h2>
+              <div class="panel-kicker">Application settings</div>
+              <h2>Dashboard configuration</h2>
             </div>
-            <button class="button button-primary small">Create alert</button>
           </div>
-          <div class="table-wrap">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Source</th>
-                  <th>Status</th>
-                  <th>Records</th>
-                  <th>Latency</th>
-                  <th>Quality</th>
-                  <th>Change</th>
-                </tr>
-              </thead>
-              <tbody id="sourceTable"></tbody>
-            </table>
+          <div class="settings-grid">
+            <div class="setting-card">
+              <h3>Theme</h3>
+              <p>Light mode is enabled for dashboard readability.</p>
+            </div>
+            <div class="setting-card">
+              <h3>Sync interval</h3>
+              <p>Data refresh is simulated in the browser for this static experience.</p>
+            </div>
+            <div class="setting-card">
+              <h3>Notifications</h3>
+              <p>Email and alert triggers can be configured here.</p>
+            </div>
           </div>
         </article>
       </section>

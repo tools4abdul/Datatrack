@@ -126,8 +126,9 @@ function renderHealth(health) {
   `).join('');
 }
 
-function renderTrend(trend) {
-  const canvas = document.getElementById('trendChart');
+function renderTrendChart(canvasId, trend) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
   const dpr = window.devicePixelRatio || 1;
   canvas.width = Math.round(canvas.clientWidth * dpr);
@@ -136,6 +137,8 @@ function renderTrend(trend) {
 
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
+  if (!width || !height) return;
+
   const padding = { top: 20, right: 16, bottom: 34, left: 42 };
   const plotWidth = width - padding.left - padding.right;
   const plotHeight = height - padding.top - padding.bottom;
@@ -209,6 +212,72 @@ function renderTrend(trend) {
   });
 }
 
+function renderTrend(trend) {
+  renderTrendChart('trendChart', trend);
+}
+
+function renderDonutChart(donutId, legendId, channels) {
+  const total = channels.reduce((sum, channel) => sum + channel.value, 0);
+  const stops = [];
+  let cursor = 0;
+
+  channels.forEach((channel) => {
+    const start = cursor;
+    const end = cursor + (channel.value / total) * 100;
+    stops.push(`${channel.color} ${start}% ${end}%`);
+    cursor = end;
+  });
+
+  const donut = document.getElementById(donutId);
+  if (donut) {
+    donut.style.background = `conic-gradient(${stops.join(',')})`;
+  }
+
+  const legend = document.getElementById(legendId);
+  if (legend) {
+    legend.innerHTML = channels.map((channel) => `
+      <li>
+        <span class="name"><span class="dot" style="background: ${channel.color};"></span>${channel.name}</span>
+        <span>${channel.value}%</span>
+      </li>
+    `).join('');
+  }
+}
+
+function renderChannels(channels) {
+  renderDonutChart('channelDonut', 'channelLegend', channels);
+}
+
+function renderSources(sources, tableId = 'sourceTable') {
+  const table = document.getElementById(tableId);
+  if (!table) return;
+
+  table.innerHTML = sources.map((source) => {
+    const statusClass = {
+      online: 'online',
+      warning: 'warning',
+      offline: 'offline'
+    }[source.status] || 'online';
+
+    const statusLabel = {
+      online: 'Healthy',
+      warning: 'Degraded',
+      offline: 'Offline'
+    }[source.status] || 'Healthy';
+
+    const statusIcon = `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" fill="currentColor" /></svg>`;
+
+    return `<tr>
+      <td class="source-name">${source.name}</td>
+      <td><span class="status-pill ${statusClass}">${statusIcon}${statusLabel}</span></td>
+      <td>${formatNumber.format(source.records)}</td>
+      <td>${source.latency}</td>
+      <td>${source.quality}</td>
+      <td><span class="table-change ${source.change.startsWith('-') ? 'negative' : 'positive'}">${source.change}</span></td>
+    </tr>`;
+  }).join('');
+}
+
 function renderActivity(activity) {
   const feed = document.getElementById('activityFeed');
   feed.innerHTML = activity.map((item) => `
@@ -251,6 +320,60 @@ function renderSources(sources) {
   }).join('');
 }
 
+function showNotification(message) {
+  const notification = document.getElementById('dashboardNotification');
+  if (!notification) return;
+
+  notification.textContent = message;
+  notification.hidden = false;
+  notification.classList.add('visible');
+
+  window.clearTimeout(showNotification.timeoutId);
+  showNotification.timeoutId = window.setTimeout(() => {
+    notification.classList.remove('visible');
+    notification.hidden = true;
+  }, 3200);
+}
+
+function bindDashboardActions() {
+  const createReport = document.getElementById('createReportButton');
+  const exportReport = document.getElementById('exportReportButton');
+  const viewPeriod = document.getElementById('viewPeriodButton');
+  const showAllEvents = document.getElementById('showAllEventsButton');
+  const createAlert = document.getElementById('createAlertButton');
+  const timeframeButtons = document.querySelectorAll('[data-timeframe]');
+
+  createReport?.addEventListener('click', () => {
+    showNotification('Create report flow initiated — this is a demo interaction.');
+  });
+
+  exportReport?.addEventListener('click', () => {
+    showNotification('Export report started. Your file will be ready shortly.');
+  });
+
+  viewPeriod?.addEventListener('click', () => {
+    const nextLabel = viewPeriod.textContent.trim() === 'This week' ? 'This month' : 'This week';
+    viewPeriod.textContent = nextLabel;
+    showNotification(`Switched dashboard to ${nextLabel.toLowerCase()}.`);
+  });
+
+  showAllEvents?.addEventListener('click', () => {
+    showNotification('Showing full event stream.');
+  });
+
+  createAlert?.addEventListener('click', () => {
+    showNotification('Alert successfully created. Monitoring your sources.');
+  });
+
+  timeframeButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      timeframeButtons.forEach((btn) => btn.classList.remove('active'));
+      button.classList.add('active');
+      showNotification(`Trend view updated to ${button.textContent.trim()}.`);
+    });
+  });
+}
+
 function normalizeIngest(data) {
   const ingest = data.ingest || {
     lastSync: new Date().toISOString(),
@@ -264,8 +387,8 @@ function normalizeIngest(data) {
   return ingest;
 }
 
-function renderIngest(ingest) {
-  const ingestPanel = document.getElementById('ingestPanel');
+function renderIngest(ingest, panelId = 'ingestPanel') {
+  const ingestPanel = document.getElementById(panelId);
   if (!ingestPanel) {
     return;
   }
@@ -296,6 +419,50 @@ function renderIngest(ingest) {
   `;
 }
 
+const dashboardState = {
+  initialRender: new Set()
+};
+
+function bindSectionNavigation(data) {
+  const navLinks = document.querySelectorAll('.nav-link[data-section]');
+  const sections = document.querySelectorAll('.dashboard-section');
+
+  function showSection(sectionId) {
+    sections.forEach((section) => {
+      section.classList.toggle('hidden', section.id !== `section-${sectionId}`);
+    });
+
+    navLinks.forEach((link) => {
+      link.classList.toggle('active', link.dataset.section === sectionId);
+    });
+
+    if (!dashboardState.initialRender.has(sectionId)) {
+      if (sectionId === 'analytics') {
+        renderTrendChart('trendChartAnalytics', data.trend);
+        renderDonutChart('channelDonutAnalytics', 'channelLegendAnalytics', data.channels);
+      }
+      if (sectionId === 'sources') {
+        renderIngest(data.ingest, 'ingestPanelSources');
+        renderSources(data.sources, 'sourceTableSources');
+      }
+      dashboardState.initialRender.add(sectionId);
+    }
+  }
+
+  navLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      const sectionId = link.dataset.section;
+      if (sectionId) {
+        showSection(sectionId);
+        showNotification(`${link.textContent.trim()} section opened.`);
+      }
+    });
+  });
+
+  showSection('overview');
+}
+
 async function initDashboard() {
   const data = await getDashboardData();
   const ingest = normalizeIngest(data);
@@ -307,6 +474,8 @@ async function initDashboard() {
   renderActivity(data.activity);
   renderSources(data.sources);
   renderIngest(ingest);
+
+  bindDashboardActions();
 
   window.addEventListener('resize', () => {
     renderTrend(data.trend);

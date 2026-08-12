@@ -231,6 +231,58 @@ h2 {
   font-size: 11px;
 }
 
+.button:focus-visible {
+  outline: 3px solid rgba(19, 109, 121, 0.45);
+  outline-offset: 2px;
+}
+
+.notification {
+  position: sticky;
+  top: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 0 18px;
+  margin: 24px 0 10px;
+  border-radius: 14px;
+  background: rgba(19, 109, 121, 0.12);
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.notification.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dashboard-section.hidden {
+  display: none;
+}
+
+.section-head {
+  margin-bottom: 20px;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+}
+
+.setting-card {
+  background: white;
+  border-radius: 18px;
+  padding: 24px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
 .kpi-grid {
   margin-top: 28px;
   display: grid;
