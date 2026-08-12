@@ -291,35 +291,6 @@ function renderActivity(activity) {
   `).join('');
 }
 
-function renderSources(sources) {
-  const table = document.getElementById('sourceTable');
-
-  table.innerHTML = sources.map((source) => {
-    const statusClass = {
-      online: 'online',
-      warning: 'warning',
-      offline: 'offline'
-    }[source.status] || 'online';
-
-    const statusLabel = {
-      online: 'Healthy',
-      warning: 'Degraded',
-      offline: 'Offline'
-    }[source.status] || 'Healthy';
-
-    const statusIcon = `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="5" fill="currentColor" /></svg>`;
-
-    return `<tr>
-      <td class="source-name">${source.name}</td>
-      <td><span class="status-pill ${statusClass}">${statusIcon}${statusLabel}</span></td>
-      <td>${formatNumber.format(source.records)}</td>
-      <td>${source.latency}</td>
-      <td>${source.quality}</td>
-      <td><span class="table-change ${source.change.startsWith('-') ? 'negative' : 'positive'}">${source.change}</span></td>
-    </tr>`;
-  }).join('');
-}
-
 function showNotification(message) {
   const notification = document.getElementById('dashboardNotification');
   if (!notification) return;
@@ -436,6 +407,8 @@ function bindSectionNavigation(data) {
       link.classList.toggle('active', link.dataset.section === sectionId);
     });
 
+    updateTopbarTitle(sectionId);
+
     if (!dashboardState.initialRender.has(sectionId)) {
       if (sectionId === 'analytics') {
         renderTrendChart('trendChartAnalytics', data.trend);
@@ -463,6 +436,21 @@ function bindSectionNavigation(data) {
   showSection('overview');
 }
 
+function updateTopbarTitle(sectionId) {
+  const title = document.querySelector('.topbar h1');
+  const labels = {
+    overview: 'Executive Dashboard',
+    analytics: 'Analytics Insights',
+    sources: 'Source Catalog',
+    pipelines: 'Pipeline Operations',
+    settings: 'Dashboard Settings'
+  };
+
+  if (title) {
+    title.textContent = labels[sectionId] || 'Executive Dashboard';
+  }
+}
+
 async function initDashboard() {
   const data = await getDashboardData();
   const ingest = normalizeIngest(data);
@@ -472,13 +460,17 @@ async function initDashboard() {
   renderHealth(data.health);
   renderTrend(data.trend);
   renderActivity(data.activity);
-  renderSources(data.sources);
   renderIngest(ingest);
+  renderSources(data.sources, 'sourceTableSources');
+  renderIngest(ingest, 'ingestPanelSources');
 
+  bindSectionNavigation(data);
   bindDashboardActions();
 
   window.addEventListener('resize', () => {
     renderTrend(data.trend);
+    renderTrendChart('trendChartAnalytics', data.trend);
+    renderDonutChart('channelDonutAnalytics', 'channelLegendAnalytics', data.channels);
   });
 }
 
