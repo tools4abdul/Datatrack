@@ -38,17 +38,15 @@ The static dashboard payload exposes a top-level `ingest` object for protocol in
 }
 ```
 
-The protocol list is designed to describe common standard protocol coverage surfaces for source ingestion: `REST`, `GraphQL`, `SOAP`, and `Webhook`.
+The protocol list is designed to describe pre-authenticated GitHub service ingestion surfaces exposed through the static front end: `GitHub REST API`, `GitHub GraphQL API`, and `GitHub Webhook`.
 
 ## Local testing
 
 ```bash
-python3 -m http.server 4173 --bind 127.0.0.1
+npm test
 ```
 
-Then open:
-
-http://127.0.0.1:4173
+The static dashboard is a browser-only front-end; the browser fetches the JSON payload and renders the dashboard directly.
 
 ## GitHub Pages deployment
 

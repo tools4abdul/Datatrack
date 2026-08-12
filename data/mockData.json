@@ -45,36 +45,28 @@
     "totalSources": 18,
     "protocols": [
       {
-        "name": "REST",
+        "name": "GitHub REST API",
         "status": "online",
         "sources": 7,
         "latency": "1.2m",
         "successRate": 98,
-        "endpoint": "/api/v1"
+        "endpoint": "https://api.github.com"
       },
       {
-        "name": "GraphQL",
+        "name": "GitHub GraphQL API",
         "status": "online",
         "sources": 3,
         "latency": "0.9m",
         "successRate": 96,
-        "endpoint": "/graphql"
+        "endpoint": "https://api.github.com/graphql"
       },
       {
-        "name": "SOAP",
-        "status": "warning",
-        "sources": 2,
-        "latency": "3.2m",
-        "successRate": 86,
-        "endpoint": "/soap/service"
-      },
-      {
-        "name": "Webhook",
+        "name": "GitHub Webhook",
         "status": "online",
         "sources": 6,
         "latency": "0.4m",
         "successRate": 99,
-        "endpoint": "/hooks"
+        "endpoint": "https://github.com/webhooks"
       }
     ]
   },

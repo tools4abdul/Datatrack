@@ -21,18 +21,18 @@ test('Dashboard analytics feed contains the expected shape', () => {
   assert.ok(Array.isArray(payload.activity));
 });
 
-test('Dashboard payload exposes a standard API protocol ingest layer', () => {
+test('Dashboard payload exposes a GitHub service API ingest layer', () => {
   const payload = JSON.parse(fs.readFileSync('data/mockData.json', 'utf8'));
 
   assert.ok(payload.ingest);
   assert.ok(Array.isArray(payload.ingest.protocols));
 
   const protocolNames = payload.ingest.protocols.map((entry) => entry.name);
-  assert.ok(protocolNames.includes('REST'));
-  assert.ok(protocolNames.includes('GraphQL'));
-  assert.ok(protocolNames.includes('SOAP'));
-  assert.ok(protocolNames.includes('Webhook'));
+  assert.ok(protocolNames.includes('GitHub REST API'));
+  assert.ok(protocolNames.includes('GitHub GraphQL API'));
+  assert.ok(protocolNames.includes('GitHub Webhook'));
 
+  assert.ok(!protocolNames.includes('SOAP'));
   assert.ok(payload.ingest.lastSync);
   assert.ok(payload.ingest.totalSources >= payload.ingest.protocols.length);
 });

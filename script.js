@@ -29,10 +29,9 @@ async function getDashboardData() {
         runtime: 'live',
         totalSources: 18,
         protocols: [
-          { name: 'REST', status: 'online', sources: 7, latency: '1.2m', successRate: 98, endpoint: '/api/v1' },
-          { name: 'GraphQL', status: 'online', sources: 3, latency: '0.9m', successRate: 96, endpoint: '/graphql' },
-          { name: 'SOAP', status: 'warning', sources: 2, latency: '3.2m', successRate: 86, endpoint: '/soap/service' },
-          { name: 'Webhook', status: 'online', sources: 6, latency: '0.4m', successRate: 99, endpoint: '/hooks' }
+          { name: 'GitHub REST API', status: 'online', sources: 7, latency: '1.2m', successRate: 98, endpoint: 'https://api.github.com' },
+          { name: 'GitHub GraphQL API', status: 'online', sources: 3, latency: '0.9m', successRate: 96, endpoint: 'https://api.github.com/graphql' },
+          { name: 'GitHub Webhook', status: 'online', sources: 6, latency: '0.4m', successRate: 99, endpoint: 'https://github.com/webhooks' }
         ]
       },
       health: [
